@@ -76,18 +76,29 @@ void* recv_thread_fun(void* args) {
                     } else {
                         // 处理未命中，并加载到缓存
                         cache_simulator.load(addr);
-                        logMissAddress("/home/cc/nvbit_release/tools/mem_trace4/misses.log", addr); // 记录miss地址
+                        logMissAddress("/home/cc/nvbit_release/tools/mem_trace4/misses1.log", addr); // 记录miss地址
                     }
                 }
                 num_processed_bytes += sizeof(mem_access_t);
             }
         }
     }
+
+    // 打印统计信息
+    uint64_t total_accesses = cache_simulator.getTotalAccesses();
+    uint64_t total_hits = cache_simulator.getTotalHits();
+    uint64_t total_misses = cache_simulator.getTotalMisses();
+    double hit_ratio = (total_accesses > 0) ? static_cast<double>(total_hits) / total_accesses : 0.0;
+
+    printf("Total traces: %lu\n", total_accesses);
+    printf("Total hits: %lu\n", total_hits);
+    printf("Total misses: %lu\n", total_misses);
+    printf("Hit ratio: %.4f\n", hit_ratio);
+
     ctx_state->recv_thread_done = false;
     free(recv_buffer);
     return NULL;
 }
-
 
 void nvbit_at_init() {
     setenv("CUDA_MANAGED_FORCE_DEVICE_ALLOC", "1", 1);
