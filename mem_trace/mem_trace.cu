@@ -56,7 +56,7 @@ void* recv_thread_fun(void* args) {
     CTXstate* ctx_state = ctx_state_map[ctx];
     ChannelHost* ch_host = &ctx_state->channel_host;
     pthread_mutex_unlock(&mutex);
-
+    //FILE* trace_file = fopen("/home/cc/nvbit_release/tools/mem_trace4/trace.log", "w");
     // 创建 Cache 模拟器实例，您可以根据需要设置缓存大小、块大小、关联度和替换策略
    Cache cache_simulator(10, 2, 32, Cache::LRU);
 
@@ -69,7 +69,8 @@ void* recv_thread_fun(void* args) {
                 mem_access_t* ma = (mem_access_t*)&recv_buffer[num_processed_bytes];
                 for (int i = 0; i < 32; i++) {
                     uint64_t addr = ma->addrs[i];
-
+                    //写memtrace到trace.log进行调试
+                    //fprintf(trace_file, "0x%016llx\n", addr);                    
                     // 直接调用cache模拟器
                     if (cache_simulator.read(addr)) {
                         // 处理命中
